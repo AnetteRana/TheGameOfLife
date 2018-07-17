@@ -9,10 +9,10 @@
 using namespace std;
 
 // initialize variables and functions
-int length = 14;
-int windowSize = 500;
+int length = 128;
+int windowSize = 900;
 
-int squareSize = 6;
+int squareSize = (windowSize / length);
 int squareHalfSize = (squareSize/2);
 
 int myIterator = 0;
@@ -26,6 +26,31 @@ void iterateBoard(bool *oldBoard, bool *newBoard);
 
 
 //////////////////////////////////////////////////////////////////////
+
+void InitializeBoard()
+{
+    int StartShape = 0;
+
+    switch  (StartShape)
+    {
+    case (0) : // randomize
+        for (int i = 0; i < (length*length); i++)
+        {
+            board0[i] = (rand() % 2 -1);
+        }
+        break;
+    case (1) : // pattern
+        for (int i = 0; i < (length*length); i++)
+        {
+
+            if ((i >= length)&&(i < length*2))
+            {
+                board0[i] = true;
+            }
+        }
+        break;
+    }
+}
 
 class GreatWindow : public RasterWindow
 {
@@ -42,20 +67,13 @@ private:
 
 GreatWindow::GreatWindow()
 {
-    setTitle("This is a great window");
+    setTitle("The Game Of Life");
     resize(windowSize, windowSize);
 
     m_timerId = startTimer(1000);
 
-    // initialize pattern ?
-    for (int i = 0; i < (length*length); i++)
-    {
+    InitializeBoard();
 
-        if ((i > length)&&(i < length*2))
-        {
-            board0[i] = true;
-        }
-    }
 }
 
 void GreatWindow::timerEvent(QTimerEvent *event)
@@ -75,29 +93,22 @@ void GreatWindow::render(QPainter *p)
         QPoint(squareHalfSize, -squareHalfSize)
     };
 
-    QColor aliveColor(255, 0, 0);
-    QColor deadColor(0, 0, 0, 100);
+//    static const QPoint mySquare[4] = {
+//        QPoint(0, 0),
+//        QPoint(squareSize, 0),
+//        QPoint(squareSize, squareSize),
+//        QPoint(0, squareSize)
+//    };
+
+    QColor aliveColor(0, 0, 255);
+    QColor deadColor(0, 0, 50, 50);
 
     p->setRenderHint(QPainter::Antialiasing);
-    p->translate(width() / 2, height() / 2);
-
-    int side = qMin(width(), height());
-    p->scale(side / 200.0, side / 200.0);
-
     p->setPen(Qt::NoPen);
-    //p->setBrush(aliveColor);
-
-    //QTime time = QTime::currentTime();
 
 
 
     /////* draw all the squares *
-
-    // first go to bottom left corner
-    p->translate(-length*squareSize, -length*squareSize);
-
-
-
 
     // then draw them all
     int squareNumber = 0;
@@ -106,7 +117,7 @@ void GreatWindow::render(QPainter *p)
     {
         for (int j = 0; j < length; j++)
         {
-            p->translate((squareSize+1), 0);
+            p->translate((squareSize), 0);
 
             if (myIterator%2)
             {
@@ -136,7 +147,7 @@ void GreatWindow::render(QPainter *p)
             }
             squareNumber++;
         }
-        p->translate(-(squareSize+1)*length, (squareSize+1));
+        p->translate(-(squareSize)*length, (squareSize));
     }
 
 
@@ -157,9 +168,6 @@ int main(int argc, char **argv)
 
     GreatWindow myWindow;
     myWindow.show();
-
-    //    AnalogClockWindow clock;
-    //    clock.show();
 
     return app.exec();
 }
