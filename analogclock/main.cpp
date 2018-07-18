@@ -6,10 +6,12 @@
 
 #include <unistd.h> // sleep (delay)
 
+#include <QKeyEvent>
+
 using namespace std;
 
 // initialize variables and functions
-int length = 128;
+int length = 127;
 int windowSize = 900;
 
 int squareSize = (windowSize / length);
@@ -23,13 +25,14 @@ bool *board1 = new bool[length*length]{false};
 void runLifeMain();
 void OLDdrawBoard(bool *in);
 void iterateBoard(bool *oldBoard, bool *newBoard);
+void InitializeBoard();
 
 
 //////////////////////////////////////////////////////////////////////
 
 void InitializeBoard()
 {
-    int StartShape = 0;
+    int StartShape = 1;
 
     switch  (StartShape)
     {
@@ -39,11 +42,34 @@ void InitializeBoard()
             board0[i] = (rand() % 2 -1);
         }
         break;
-    case (1) : // pattern
+
+    case (1) : // line along top
         for (int i = 0; i < (length*length); i++)
         {
 
             if ((i >= length)&&(i < length*2))
+            {
+                board0[i] = true;
+            }
+        }
+        break;
+
+    case (2) : // every other
+        for (int i = 0; i < (length*length); i++)
+        {
+
+            if (i%2)
+            {
+                board0[i] = true;
+            }
+        }
+        break;
+
+    case (3) : // left vs right
+        for (int i = 0; i < (length*length); i++)
+        {
+
+            if (i%5 > 2)
             {
                 board0[i] = true;
             }
@@ -70,7 +96,7 @@ GreatWindow::GreatWindow()
     setTitle("The Game Of Life");
     resize(windowSize, windowSize);
 
-    m_timerId = startTimer(1000);
+    m_timerId = startTimer(100);
 
     InitializeBoard();
 
@@ -86,26 +112,25 @@ void GreatWindow::timerEvent(QTimerEvent *event)
 // this is what happens each render
 void GreatWindow::render(QPainter *p)
 {
-    static const QPoint mySquare[4] = {
-        QPoint(squareHalfSize, squareHalfSize),
-        QPoint(-squareHalfSize, squareHalfSize),
-        QPoint(-squareHalfSize, -squareHalfSize),
-        QPoint(squareHalfSize, -squareHalfSize)
-    };
-
 //    static const QPoint mySquare[4] = {
-//        QPoint(0, 0),
-//        QPoint(squareSize, 0),
-//        QPoint(squareSize, squareSize),
-//        QPoint(0, squareSize)
+//        QPoint(squareHalfSize, squareHalfSize),
+//        QPoint(-squareHalfSize, squareHalfSize),
+//        QPoint(-squareHalfSize, -squareHalfSize),
+//        QPoint(squareHalfSize, -squareHalfSize)
 //    };
 
+        static const QPoint mySquare[4] = {
+            QPoint(0, 0),
+            QPoint(squareSize, 0),
+            QPoint(squareSize, squareSize),
+            QPoint(0, squareSize)
+        };
+
     QColor aliveColor(0, 0, 255);
-    QColor deadColor(0, 0, 50, 50);
+    QColor deadColor(200, 200, 255);
 
     p->setRenderHint(QPainter::Antialiasing);
     p->setPen(Qt::NoPen);
-
 
 
     /////* draw all the squares *
@@ -265,3 +290,4 @@ void iterateBoard (bool *oldBoard, bool *newBoard)
         }
     }
 }
+

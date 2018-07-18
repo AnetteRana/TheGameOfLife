@@ -74,6 +74,8 @@ protected:
 
 private:
     QBackingStore *m_backingStore;
+
+    void keyPressEvent(QKeyEvent* event);
 };
 //! [1]
 #endif // RASTERWINDOW_H

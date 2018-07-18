@@ -4,7 +4,7 @@ include(../rasterwindow/rasterwindow.pri)
 CONFIG += no_batch
 
 SOURCES += \
-    main.cpp
+    main.cpp \
 
 target.path = $$[QT_INSTALL_EXAMPLES]/gui/analogclock
 INSTALLS += target
