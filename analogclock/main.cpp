@@ -12,9 +12,13 @@ using namespace std;
 
 // initialize variables and functions
 int length = 127;
-int windowSize = 900;
+//int windowSize = 900;
 
-int squareSize = (windowSize / length);
+//int squareSize = (windowSize / length);
+int squareSize = 7;
+
+int windowSize = (length*squareSize);
+
 int squareHalfSize = (squareSize/2);
 
 int myIterator = 0;
@@ -142,7 +146,7 @@ void GreatWindow::render(QPainter *p)
     {
         for (int j = 0; j < length; j++)
         {
-            p->translate((squareSize), 0);
+            // p->translate((squareSize), 0);
 
             if (myIterator%2)
             {
@@ -170,6 +174,9 @@ void GreatWindow::render(QPainter *p)
                     p->drawConvexPolygon(mySquare, 4);
                 }
             }
+
+            p->translate((squareSize), 0);
+
             squareNumber++;
         }
         p->translate(-(squareSize)*length, (squareSize));
